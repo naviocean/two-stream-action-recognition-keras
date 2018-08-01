@@ -6,7 +6,7 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.optimizers import SGD, Adam
 from keras.layers.normalization import BatchNormalization
-
+from keras.utils import multi_gpu_model
 # CNN model for the spatial stream
 def get_model(data, weights='imagenet'):
     # create the base pre-trained model
@@ -24,7 +24,7 @@ def get_model(data, weights='imagenet'):
     model = Model(inputs=base_model.input, outputs=predictions)
     return model
 
-def freeze_all_but_top(model):
+def freeze_all_but_top(parallel_model,model):
     """Used to train just the top layers of the model."""
     # first: train only the top layers (which were randomly initialized)
     # i.e. freeze all convolutional InceptionV3 layers
@@ -32,11 +32,11 @@ def freeze_all_but_top(model):
         layer.trainable = False
 
     # compile the model (should be done *after* setting layers to non-trainable)
-    model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
+    parallel_model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
 
-    return model
+    return parallel_model, model
 
-def freeze_all_but_mid_and_top(model):
+def freeze_all_but_mid_and_top(parallel_model,model):
     """After we fine-tune the dense layers, train deeper."""
     # we chose to train the top 2 inception blocks, i.e. we will freeze
     # the first 172 layers and unfreeze the rest:
@@ -47,10 +47,10 @@ def freeze_all_but_mid_and_top(model):
 
     # we need to recompile the model for these modifications to take effect
     # we use SGD with a low learning rate
-    model.compile(
+    parallel_model.compile(
         optimizer=SGD(lr=0.0001, momentum=0.9),
         loss='categorical_crossentropy',
         metrics=['accuracy', 'top_k_categorical_accuracy'])
 
-    return model
+    return parallel_model, model
     

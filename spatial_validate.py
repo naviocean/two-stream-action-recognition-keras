@@ -2,7 +2,7 @@
 Train our temporal-stream CNN on optical flow frames.
 """
 from spatial_validate_model import ResearchModels
-from spatial_validate_data import DataSet, keras_validation_generator
+from spatial_validate_data import DataSet
 import time
 import os.path
 from os import makedirs
@@ -33,12 +33,12 @@ def main():
 
     """These are the main training settings. Set each before running this file."""
     "=============================================================================="
-    saved_weights = None # weights file
+    saved_weights = '/home/duong/two-stream-action-recognition-keras/out/checkpoints/1807301247/010-2.174.hdf5' # weights file
     class_limit = None  # int, can be 1-101 or None
     n_snip = 1 # number of chunks from each video used for testing
     opt_flow_len = 10 # number of optical flow frames used
     image_shape = (224, 224)
-    batch_size = 1024
+    batch_size = 512
     "=============================================================================="
 
     test_1epoch(class_limit=class_limit, n_snip=n_snip, opt_flow_len=opt_flow_len, image_shape=image_shape, batch_size=batch_size, saved_weights=saved_weights)

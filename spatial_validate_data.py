@@ -24,8 +24,8 @@ class DataSet():
         self.opt_flow_len = opt_flow_len
         self.batch_size = batch_size
 
-        self.static_frame_path = os.path.join('/data', 'test')
-        self.opt_flow_path = os.path.join('/data', 'opt_flow')
+        self.static_frame_path = os.path.join('/home/duong/data', 'test')
+        self.opt_flow_path = os.path.join('/home/duong/data', 'opt_flow')
 
         # Get the data.
         self.data_list = self.get_data_list()
@@ -46,7 +46,7 @@ class DataSet():
     @staticmethod
     def get_data_list():
         """Load our data list from file."""
-        with open(os.path.join('/data', 'data_list.csv'), 'r') as fin:
+        with open(os.path.join('/home/duong/data', 'data_list.csv'), 'r') as fin:
             reader = csv.reader(fin)
             data_list = list(reader)
 
